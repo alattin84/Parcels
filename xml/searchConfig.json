@@ -1,0 +1,253 @@
+{
+  "layers": {
+    "layer": [
+      {
+        "name": "Address",
+        "url": "http://gis.bentoncountyar.gov/arcgis/rest/services/Assessor/ParcelMobile/MapServer/2",
+        "value": "FULL_ADDR LIKE REPLACE('%value%', ' ', '%')",
+        "title": "FULL_ADDR",
+        "placeholder": "Search by Full Address...",
+        "example": "215 E Central Ave",
+        "fields": {
+          "field": [
+            {
+              "name": "FULL_ADDR",
+              "alias": "Full Address"
+            },
+            {
+              "name": "ADDR_NUM",
+              "alias": "Address #"
+            },
+            {
+              "name": "PRE_DIR",
+              "alias": "Direction"
+            },
+            {
+              "name": "ROAD_NAME",
+              "alias": "Road"
+            },
+            {
+              "name": "TYPE",
+              "alias": "Type"
+            },
+            {
+              "name": "SUF_DIR",
+              "alias": "Suffix"
+            },
+            {
+              "name": "UNIT_APT",
+              "alias": "Unit"
+            },
+            {
+              "name": "CITY",
+              "alias": "City"
+            },
+            {
+              "name": "ZIP_CODE",
+              "alias": "Zip"
+            }
+          ]
+        }
+      },
+      {
+        "name": "GIS Section Maps",
+        "url": "http://gis.bentoncountyar.gov/arcgis/rest/services/Basemaps/Cadastral/MapServer/9",
+        "value": "S_T_R LIKE '%value%'",
+        "title": "Section Map",
+        "placeholder": "Search by S-T-R...",
+        "example": "17-19-30",
+        "fields": {
+          "field": [
+            {
+              "name": "S_T_R",
+              "alias": "Sections"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Parcels",
+        "url": "http://gis.bentoncountyar.gov/arcgis/rest/services/Assessor/ParcelMobile/MapServer/1",
+        "value": "PARCELID like '%value%' or OW_NAME like REPLACE('%value%', ' ', '%') or PH_ADD like REPLACE('%value%', ' ', '%')",
+        "title": "OW_NAME",
+        "placeholder": "Search by Parcel Id, Owner, or Address...",
+        "example": "01-00160-001, Smith, 215 E Central",
+        "fields": {
+          "field": [
+            {
+              "name": "OW_NAME",
+              "alias": "Owner"
+            },
+            {
+              "name": "PARCELID",
+              "alias": "Parcel Id"
+            },
+            {
+              "name": "PH_ADD",
+              "alias": "Address"
+            },
+            {
+              "name": "TYPE_",
+              "alias": "Type"
+            },
+            {
+              "name": "ACRE_AREA",
+              "alias": "Acres"
+            },
+            {
+              "name": "S_T_R",
+              "alias": "S-T-R"
+            },
+            {
+              "name": "SUBDIVNAME",
+              "alias": "Subdivison Name"
+            },
+            {
+              "name": "SCHL_CODE",
+              "alias": "School Code"
+            }
+          ]
+        },
+        "linkTitle": "ARCounty Data",
+        "link": "http://www.arcountydata.com/parcel.asp?parcelid={PARCELID}&county=Benton&AISGIS=Benton",
+        "dataField": "PARCELID"
+      },
+      {
+        "name": "Plat Scans By Parcel Id",
+        "url": "http://gis.bentoncountyar.gov/arcgis/rest/services/Basemaps/PlatsByParcel/MapServer/0",
+        "value": "PARCELID like '%value%' or OW_NAME like '%value%' or PH_ADD like REPLACE('%value%', ' ', '%')",
+        "title": "IMAGES",
+        "placeholder": "Search by Parcel Id...",
+        "example": "01-00160-001, Smith, 215 E Central",
+        "fields": {
+          "field": [
+            {
+              "name": "IMAGES",
+              "alias": "Plat"
+            },
+            {
+              "name": "PARCELID",
+              "alias": "Parcel Id"
+            },
+            {
+              "name": "OW_NAME",
+              "alias": "Owner"
+            },
+            {
+              "name": "BOOK",
+              "alias": "Book"
+            },
+            {
+              "name": "PAGE",
+              "alias": "Page"
+            },
+            {
+              "name": "SUBDIVISION",
+              "alias": "Subdivision"
+            },
+            {
+              "name": "CITY",
+              "alias": "City"
+            }
+          ]
+        },
+        "dataField": "IMAGES",
+        "linkTitle": "{IMAGES}",
+        "link": "http://gis.bentoncountyar.gov/plats/{CITY}/{IMAGES}.pdf"
+      },
+      {
+        "name": "Plat Scans By Sub or S-T-R",
+        "url": "http://gis.bentoncountyar.gov/arcgis/rest/services/Basemaps/Cadastral/MapServer/11",
+        "value": "S_T_R like '%value%' or SUBDIVISION LIKE REPLACE('%value%', ' ', '%')",
+        "title": "IMAGES",
+        "placeholder": "Search by S-T-R...",
+        "example": "17-19-30",
+        "fields": {
+          "field": [
+            {
+              "name": "IMAGES",
+              "alias": "Plat"
+            },
+            {
+              "name": "BOOK",
+              "alias": "Book"
+            },
+            {
+              "name": "PAGE",
+              "alias": "Page"
+            },
+            {
+              "name": "S_T_R",
+              "alias": "S-T-R"
+            },
+            {
+              "name": "SUBDIVISION",
+              "alias": "Subdivision"
+            },
+            {
+              "name": "CITY",
+              "alias": "City"
+            }
+          ]
+        },
+        "linkTitle": "{IMAGES}",
+        "link": "http://gis.bentoncountyar.gov/plats/{CITY}/{IMAGES}.pdf"
+      },
+      {
+        "name": "Streets",
+        "url": "http://gis.bentoncountyar.gov/ArcGIS/rest/services/Basemaps/Transportation/MapServer/8",
+        "value": "ROAD_NAME like REPLACE('%value%', ' ', '%')",
+        "title": "ROAD_NAME",
+        "placeholder": "Search by Street Name...",
+        "example": "E Central Ave",
+        "fields": {
+          "field": [
+            {
+              "name": "ROAD_NAME",
+              "alias": "Road"
+            },
+            {
+              "name": "HWY_NUM",
+              "alias": "Hwy. Number"
+            },
+            {
+              "name": "OWNERSHIP",
+              "alias": "Ownership"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Subdivisions",
+        "url": "http://gis.bentoncountyar.gov/ArcGIS/rest/services/Basemaps/Cadastral/MapServer/5",
+        "value": "NAME like REPLACE('%value%', ' ', '%')",
+        "title": "NAME",
+        "placeholder": "Search by Subdivision...",
+        "example": "Avondale",
+        "fields": {
+          "field": {
+            "name": "NAME",
+            "alias": "Name"
+          }
+        }
+      },
+      {
+        "name": "Rural Scans",
+        "url": "http://gis.bentoncountyar.gov/ArcGIS/rest/services/Basemaps/Cadastral/MapServer/10",
+        "value": "S_T_R like '%value%'",
+        "title": "S_T_R",
+        "placeholder": "Search by S-T-R...",
+        "example": "17-19-30",
+        "fields": {
+          "field": {
+            "name": "S_T_R",
+            "alias": "S-T-R"
+          }
+        },
+        "linkTitle": "Click here for {S_T_R}",
+        "link": "http://gis.bentoncountyar.gov/PLATS/RURAL/{S_T_R}/",
+        "dataField": "S_T_R"
+      }
+    ]
+  }
+}

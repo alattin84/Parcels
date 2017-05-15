@@ -1,0 +1,24 @@
+.grid_header{
+    border: 1px solid #000000;
+}
+
+.grid_row {
+    border: 1px solid #000000;
+    text-align: center;
+}
+
+.grid_row.td {
+    width: auto;
+}
+
+.grid_odd_row{
+    background-color: #cccccc;
+}
+
+.grid_odd_col{
+    border: 1px solid #000000;
+}
+
+.grid_even_col {
+    border: 1px solid #000000;
+}

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>Benton County GIS: Parcels</title>
+    <link rel="icon" type="image/png" href="images/GIS-Logo.png" />
+    <!-- Calcite Bootstrap -->
+    <link rel="stylesheet" href="dist/css/calcite-bootstrap.min-v0.2.css">
+    <!-- Calcite Maps -->
+    <link rel="stylesheet" href="dist/css/calcite-maps-arcgis-4.x.min-v0.2.css">
+    <!-- ArcGIS JS 4.0 -->
+    <link rel="stylesheet" href="https://js.arcgis.com/4.3/esri/css/main.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/3.19/dojox/widget/Toaster/Toaster.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/loading.css">
+    <link rel="stylesheet" href="dist/css/dijit.css">
+
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+    </style>
+
+    <script type="text/javascript">
+        if(document.documentMode < 11){
+            alert("This website no longer supports Internet Explorer " + document.documentMode + "!\nPlease use an alternative browser or upgrade to Internet Explorer 11.");
+        }
+    </script>
+</head>
+
+<body class="calcite-maps calcite-nav-top">
+
+<div id="preloadingPane" class="preloadingPane" style="overflow-y: auto;">
+    <div class="loadingText"><h3>Loading Parcel Map...</h3></div>
+    <div class="spinner">
+        <div class="rect1"></div>
+        <div class="rect2"></div>
+        <div class="rect3"></div>
+        <div class="rect4"></div>
+        <div class="rect5"></div>
+    </div>
+</div>
+
+<!-- Loading -->
+<div id="loadingPane" class="loadingPane" style="overflow-y: auto;">
+    <div id="disclaimer" style="background: white; margin-top: 10%; margin-left: 10%; margin-right: 10%; border-radius: 5px;">
+        <div class="modal-header" style="text-align: center !important;">
+            <h4 style="padding-top: 5px; margin-bottom: 0;">Disclaimer</h4>
+        </div>
+        <div class="loading-body">
+            <p class="text-justify" style="padding: 1.5em;">
+                This information was created by Benton County personnel in accordance with Arkansas Code 15-21-502 (2)(B), which states
+                The digital cadastre manages and provides access to cadastral information. Digital cadastre does not represent legal property boundary descriptions,
+                nor is it suitable for boundary determination of the individual parcels included in the cadastre and Arkansas Code 15-21-502 (6) which indicates
+                that "Digital cadastre" means the storage and manipulation of computerized representations of parcel maps and linked databases.
+                <br><br>
+                This information has been developed from the best available sources. <b style="text-decoration: underline;">No guarantee of accuracy is granted, nor is any responsibility for reliance thereon assumed.</b>
+                In no event shall the County be liable for direct, indirect, incidental, consequential, or special damages of any kind, including, but not limited to, loss of anticipated
+                profits or benefits arising out of the use of or reliance on the data.
+                <br><br>
+                This information herein is considered a graphical representation only. <b style="text-decoration: underline;">Benton County is in no way responsible for or liable for any misrepresentation or re-use of this
+                    information.</b> Although this map has been processed successfully on the computers at Benton County, no guarantee, expressed or implied, is made by said County regarding
+                the use of this map on any other system, nor does the act of distribution constitute or imply any such warranty. Distribution of this map is intended for information
+                purposes and should not be considered authoritative for engineering, legal and other site-specific uses.
+            </p>
+        </div>
+        <div class="modal-footer" style="text-align: center !important;">
+            <button id="btnAccept"  type="button" class="btn btn-success" onclick="">Accept</button>
+            <button id="btnDecline" type="button" class="btn btn-default">Decline</button>
+        </div>
+    </div>
+</div>
+
+<!-- Error Toaster -->
+<div id="errorPane"></div>
+
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true" style="overflow:auto;">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content text-center" style="font-size: small;">
+            <div class="modal-header"><h4 style="margin: 0;"><b>Error</b></h4></div>
+            <div id="errorContent" class="modal-body text-center" style="font-size: large;"></div>
+            <button id="btnClsModal" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
+
+<!--
+<div id="errorModal" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Error</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div id="errorContent" class="modal-content"></div>
+    </div>
+</div>
+-->
+
+<!-- Navbar -->
+<nav class="navbar calcite-navbar navbar-fixed-top calcite-text-light calcite-bgcolor-dark-blue">
+    <!-- Menu -->
+    <div class="dropdown calcite-dropdown calcite-text-dark calcite-bg-light" role="presentation">
+        <a class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">
+            <div class="calcite-dropdown-toggle">
+                <span class="sr-only">Toggle dropdown menu</span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </a>
+        <ul class="dropdown-menu">
+            <li>
+                <a role="button" data-target="#panelLayers" aria-haspopup="true"><span class="glyphicon glyphicon-th-large"></span> Layers</a>
+            </li>
+            <li>
+                <a role="button" data-target="#panelLegend" aria-haspopup="true"><span class="glyphicon glyphicon-picture"></span> Legend</a>
+            </li>
+            <li>
+                <a role="button" data-target="#panelPrint" aria-haspopup="true"><span class="glyphicon glyphicon-print"></span> Print</a>
+            </li>
+            <li>
+                <a role="button" data-target="#panelSearch" aria-haspopup="true"><span class="glyphicon glyphicon-search"></span> Search</a>
+            </li>
+            <li><a role="button" id="calciteToggleNavbar" aria-haspopup="true"><span class="glyphicon glyphicon-fullscreen"></span> Full Map</a></li>
+        </ul>
+    </div>
+    <!-- Title -->
+    <div class="calcite-title calcite-overflow-hidden">
+        <span class="calcite-title-main">Parcels</span>
+        <span class="calcite-title-divider hidden-xs"></span>
+        <span class="calcite-title-sub hidden-xs">A basic site to retrieve parcel information</span>
+    </div>
+    <!-- Nav -->
+    <!--<ul class="nav navbar-nav calcite-nav">
+        <li class="active"><a id="mapNav" class="hidden-xs hidden-sm" href="#2dTab" aria-controls="2Dtab"
+                              aria-expanded="true" role="tab" data-toggle="tab" data-tooltip="tip" title="2D View"
+                              data-placement="bottom">Map</a></li>
+        <li><a id="sceneNav" class="hidden-xs hidden-sm" href="#3dTab" aria-controls="3Dtab"
+               role="tab" data-toggle="tab" data-tooltip="tip" title="3D View" data-placement="bottom">Scene</a></li>
+        <li>
+            <div class="calcite-navbar-search calcite-search-expander">
+                <div id="searchWidgetDiv"></div>
+            </div>
+        </li>
+    </ul>-->
+</nav>
+<!--/.calcite-navbar -->
+
+<!-- Map  -->
+<div class="calcite-map calcite-map-absolute">
+    <div id="tabContainer" class="tab-content">
+        <div id="2dTab" class="tab-pane fade in active" role="tabpanel">
+            <div id="mapViewDiv"></div>
+        </div>
+        <div id="3dTab" class="tab-pane fade" role="tabpanel">
+            <div id="sceneViewDiv"></div>
+        </div>
+    </div>
+</div>
+<!-- /.calcite-map -->
+
+<!-- Panels -->
+<div class="calcite-panels calcite-panels-right calcite-text-dark calcite-bg-light panel-group">
+
+    <!-- Layers Panel -->
+    <div id="panelLayers" class="panel collapse">
+        <div id="headingLayers" class="panel-heading" role="tab">
+            <div class="panel-title">
+                <a class="panel-toggle collapsed" role="button" data-toggle="collapse" href="#collapseLayers"
+                   aria-expanded="false" aria-controls="collapseLayers"><span class="glyphicon glyphicon-th-large" aria-hidden="true"></span><span class="panel-label">Layers</span></a>
+                <a class="panel-close" role="button" data-toggle="collapse" data-target="#panelLayers"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a>
+            </div>
+        </div>
+        <div id="collapseLayers" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingLayers">
+            <div id="layerList" class="panel-body"></div>
+        </div>
+    </div>
+
+    <!-- Legend Panel -->
+    <div id="panelLegend" class="panel collapse">
+        <div id="headingLegend" class="panel-heading" role="tab">
+            <div class="panel-title">
+                <a class="panel-toggle collapsed" role="button" data-toggle="collapse" href="#collapseLegend"
+                   aria-expanded="false" aria-controls="collapseLegend"><span class="glyphicon glyphicon-picture" aria-hidden="true"></span><span class="panel-label">Legend</span></a>
+                <a class="panel-close" role="button" data-toggle="collapse" data-target="#panelLegend"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a>
+            </div>
+        </div>
+        <div id="collapseLegend" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingLegend">
+            <div id="legendList" class="panel-body"></div>
+        </div>
+    </div>
+
+    <!-- Print Panel -->
+    <div id="panelPrint" class="panel collapse">
+        <div id="headingPrint" class="panel-heading" role="tab">
+            <div class="panel-title">
+                <a class="panel-toggle collapsed" role="button" data-toggle="collapse" href="#collapsePrint"
+                   aria-expanded="false" aria-controls="collapsePrint"><span class="glyphicon glyphicon-print" aria-hidden="true"></span><span class="panel-label">Print</span></a>
+                <a class="panel-close" role="button" data-toggle="collapse" data-target="#panelPrint"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a>
+            </div>
+        </div>
+        <div id="collapsePrint" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingPrint">
+            <div id="printWidget" class="panel-body"></div>
+        </div>
+    </div>
+
+    <!-- Search Panel -->
+    <div id="panelSearch" class="panel panel-map collapse in">
+        <div id="headingSearch" class="panel-heading">
+            <div class="panel-title">
+                <a class="panel-toggle" role="button" data-toggle="collapse" href="#collapseSearch"
+                   data-parent="#panelAccordion" aria-expanded="true" aria-controls="collapseSearch"><span class="glyphicon glyphicon-search" aria-hidden="true"></span><span class="panel-label">Search</span></a>
+                <a class="panel-close" role="button" data-toggle="collapse" data-target="#panelSearch"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a>
+            </div>
+        </div>
+        <div id="collapseSearch" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingSearch">
+            <div class="panel panel-body">
+                <div>
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#textSearch" data-toggle="tab">Text</a></li>
+                        <li><a href="#graphSearch" data-toggle="tab">Graphical</a></li>
+                        <li><a href="#spaSearch" data-toggle="tab">Spatial</a></li>
+                    </ul>
+                    <div class="tab-content tab-active" id="tabs">
+                        <div class="tab-pane tab-background active" id="textSearch">
+                            <div class="text-right"><a id="txtSrchPop" rel="popover" data-placement="left" title="Hint:"><i class="fa fa-question-circle fa" aria-hidden="true"></i></a></div>
+                            <div class="text-center" style="padding-top: 1em;">
+                                <label for="ddlTxtSearch">Search Layer:&nbsp;</label>
+                                <select id="ddlTxtSearch"></select>
+                            </div>
+                            <br>
+                            <div class="col-lg-12">
+                                <span><label for="txtSearch">Search:&nbsp;</label></span><span id="example" class="exampleText"></span><br>
+                                <input type="text" id="txtSearch" style="width: 100%;"/><br><br>
+                                <div style="width:100%; text-align: center;">
+                                    <button id="btnSearch" class="btn btn-primary" title="Begin search..."><i class="fa fa-search" aria-hidden="true"></i> Find</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane tab-background" id="graphSearch">
+                            <div class="text-right"><a id="graSrchPop" rel="popover" data-placement="left" title="Hint:"><i class="fa fa-question-circle fa" aria-hidden="true"></i></a></div>
+                            <div class="text-center" style="padding-top: 1em;">
+                                <label>Search Layer:</label>
+                                <select id="ddlIdentifyLayers"></select><br><br>
+                                <hr style="margin: 0;">
+                                <br>
+                                <div>
+                                    <label>Select a feature to draw:</label>
+                                    <div id='infoDraw' style="background: transparent;">
+                                        <button id="btn-Point" class="btn btn-primary" title="Point"><i id="img-Point" class="fa fa-circle-o" aria-hidden="true"></i></button>
+                                        <button id="btn-Polyline" class="btn btn-primary" title="Polyline"><i id="img-Polyline" class="fa fa-minus" aria-hidden="true"></i></button>
+                                        <button id="btn-Polygon" class="btn btn-primary" title="Polygon"><i id="img-Polygon" class="fa fa-square-o" aria-hidden="true"></i></button>
+                                        <button id="btn-Remove" class="btn btn-primary" title="Clear Graphics"><i id="img-Remove" class="fa fa-eraser" aria-hidden="true"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane tab-background" id="spaSearch">
+                            <div class="text-right"><a id="spaSrchPop" rel="popover" data-placement="left" title="Hint:"><i class="fa fa-question-circle fa" aria-hidden="true"></i></a></div>
+                            <div class="tab-container text-center">
+                                <label>Enter Buffer Distance:</label><br>
+                                <div style="background: transparent;">
+                                    <input id="txtDistance" class="txt-distance" type="text" value="20">
+                                    <select id="ddlUnit">
+                                        <option value='feet'>Feet</option>
+                                        <option value='miles'>Miles</option>
+                                        <option value='meters'>Meters</option>
+                                    </select>
+                                    <br><br>
+                                    <button id="btnBuffer" class="btn btn-primary">Apply Buffer</button>
+                                    <button id="btnClrBuffer" class="btn btn-primary">Clear</button>
+                                </div><br>
+                                <hr style="margin: 0;"><br>
+                                <div style="background: transparent;">
+                                    <label>Select Features In:</label>
+                                    <select id="ddlSpatialLayers"></select>
+                                    <br>
+                                    <div style="padding-top: 10px;">
+                                        <button id="btnSpaInt" class="btn btn-primary">Intersect By</button>
+                                        <button id="btnSpaCon" class="btn btn-primary">Contain By</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="panelResults" class="panel">
+        <div id="headingResults" class="panel-heading" role="tab">
+            <div class="panel-title">
+                <a class="panel-toggle" role="button" aria-expanded="false" aria-controls="collapseResults"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span><span>Results</span></a>
+                <div class="result-menu">
+                    <button id="printAll" class="btn btn-primary"
+                            type="button" disabled="disabled">Print</button>
+                    <button id="exportAll" class="btn btn-primary"
+                            type="button" disabled="disabled">Export CSV</button>
+                    <button id="clearAll" class="btn btn-primary"
+                            type="button" disabled="disabled">Clear Results</button>
+                </div>
+            </div>
+        </div>
+        <div id="collapseResults" class="results-closed" role="tabpanel" aria-labelledby="headingResults">
+            <div id="resultsDiv"></div>
+        </div>
+    </div>
+</div>
+<!-- /.calcite-panels -->
+
+<script type="text/javascript">
+    var dojoConfig = {
+        parseOnLoad: true,
+        packages: [
+            {
+                name: "bootstrap",
+                location: location.pathname.replace(/\/[^/]+$/, "") + "/dist/vendor/dojo-bootstrap"
+                //location: "https://esri.github.io/calcite-maps/dist/vendor/dojo-bootstrap"
+            },
+            {
+                name: "calcite-maps",
+                location: location.pathname.replace(/\/[^/]+$/, "") + "/dist/js/dojo"
+                //location: "https://esri.github.io/calcite-maps/dist/js/dojo"
+            },
+            {
+                name: "js",
+                location: location.pathname.replace(/\/[^/]+$/, "") + "/js"
+            }/*,
+            {
+                name: "esri_319",
+                location: "https://js.arcgis.com/3.19/"
+            }*/]
+    };
+</script>
+
+<!-- ArcGIS JS 4.0 -->
+<script src="https://js.arcgis.com/4.3/"></script>
+<script src="startup.js"></script>
+</body>
+</html>

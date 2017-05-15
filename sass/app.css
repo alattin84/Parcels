@@ -1,0 +1,19 @@
+button, input, optgroup, select, textarea {
+  color: black;
+  padding: 3px; }
+
+/*.calcite-panels {
+    height: 300px;
+}*/
+.exampleText {
+  font-size: 10px; }
+
+#resultsPanel {
+  background: #4c4c4c;
+  position: absolute;
+  bottom: 0px;
+  height: 300px;
+  width: 100%;
+}
+
+/*# sourceMappingURL=app.css.map */

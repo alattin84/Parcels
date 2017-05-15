@@ -1,0 +1,139 @@
+<?xml version="1.0" ?>
+<!-- See Enhanced Search Widget XML Configuration.pdf for detailed explanation -->
+<configuration>
+	<layers>
+       <layer>
+            <name>Address</name>
+            <url>http://gis.bentoncountyar.gov/arcgis/rest/services/Assessor/ParcelMobile/MapServer/2</url>
+            <value>FULL_ADDR LIKE REPLACE('%value%', ' ', '%')</value>
+            <title>FULL_ADDR</title>
+            <placeholder>Example: 215 E Central Ave</placeholder>
+            <fields>
+                <field name="FULL_ADDR" alias="Full Address"></field>
+                <field name="ADDR_NUM" alias="Address #"></field>
+                <field name="PRE_DIR" alias="Direction"></field>
+                <field name="ROAD_NAME" alias="Road"></field>
+                <field name="TYPE" alias="Type"></field>
+                <field name="SUF_DIR" alias="Suffix"></field>
+                <field name="UNIT_APT" alias="Unit"></field>
+                <field name="CITY" alias="City"></field>
+                <field name="ZIP_CODE" alias="Zip"></field>
+            </fields>
+       </layer>
+       <layer>
+            <name>Annexations</name>
+            <url>http://gis.bentoncountyar.gov/ArcGIS/rest/services/Basemaps/Cadastral/MapServer/8</url>
+            <value>CITY LIKE REPLACE('%value%', ' ', '%')</value>
+            <title>CITY</title>
+            <placeholder>Bentonville</placeholder>
+            <fields>
+                <field name="CITY" alias="City"></field>
+                <field name="CC_CODE" alias="CC_CODE"></field>
+                <field name="ANNEX_YEAR" alias="Annex Year"></field>
+                <field name="CITY_CODE" alias="City Code"></field>
+                <field name="DATE_FILE" alias="Date Filed"></field>
+            </fields>
+      </layer>
+      <layer>
+            <name>GIS Section Maps</name>
+            <url>http://gis.bentoncountyar.gov/arcgis/rest/services/Basemaps/Cadastral/MapServer/9</url>
+            <value>S_T_R LIKE '%value%'</value>
+            <title>Section Map</title>
+            <placeholder>Search by S-T-R...</placeholder>
+            <fields>
+              <field name="S_T_R" alias="Sections" />
+              <field name="HYPEXT" alias="Link" />
+            </fields>
+      </layer>
+      <layer>
+            <name>Parcels</name>
+            <url>http://gis.bentoncountyar.gov/arcgis/rest/services/Assessor/ParcelMobile/MapServer/1</url>
+            <value>PARCELID like '%value%' or OW_NAME like REPLACE('%value%', ' ', '%') or PH_ADD like REPLACE('%value%', ' ', '%')</value>
+            <title>OW_NAME</title>
+            <placeholder>Search by parcel id, owner, or address...</placeholder>
+            <fields>
+                <field name="OW_NAME" alias="Owner" />
+                <field name="PARCELID" alias="Parcel Id" />
+                <field name="PH_ADD" alias="Address" />
+                <field name="TYPE_" alias="Type" />
+                <field name="ACRE_AREA" alias="Acres" />
+                <field name="S_T_R" alias="S-T-R" />
+                <field name="SUBDIVNAME" alias="Subdivison Name" />
+                <field name="SCHL_CODE" alias="School Code" />
+            </fields>
+            <linkTitle>ARCounty Data Information</linkTitle>
+            <link><![CDATA[http://www.arcountydata.com/parcel.asp?parcelid=${PARCELID}&county=Benton&AISGIS=Benton]]></link>
+            <dataField>PARCELID</dataField>
+      </layer>
+      <layer>
+            <exclude></exclude>
+            <name>Plat Scans By Parcel Id</name>
+            <url>http://gis.bentoncountyar.gov/arcgis/rest/services/Basemaps/PlatsByParcel/MapServer/0</url>
+            <value>PARCELID like '%value%' or OW_NAME like '%value%' or PH_ADD like REPLACE('%value%', ' ', '%')</value>
+            <title>IMAGES</title>
+            <placeholder>Search by parcel id...</placeholder>
+            <fields>
+              <field name="IMAGES" alias="Plat" />
+              <field name="PARCELID" alias="Parcel Id" />
+              <field name="OW_NAME" alias="Owner" />
+              <field name="BOOK" alias="Book"  />
+              <field name="PAGE" alias="Page" />
+              <field name="SUBDIVISION" alias="Subdivision" />
+              <field name="CITY" alias="City" />
+              <field name="HYPEXT" alias="Link" />
+            </fields>
+      </layer>
+      <layer>
+            <name>Plat Scans By Sub or S-T-R</name>
+            <url>http://gis.bentoncountyar.gov/arcgis/rest/services/Basemaps/Cadastral/MapServer/11</url>
+            <value>S_T_R like '%value%' or SUBDIVISION LIKE REPLACE('%value%', ' ', '%')</value>
+            <title>IMAGES</title>
+            <placeholder>Search by S-T-R...</placeholder>
+            <fields>
+                <field name="IMAGES" alias="Plat" />
+                <field name="BOOK" alias="Book"  />
+                <field name="PAGE" alias="Page" />
+                <field name="S_T_R" alias="S-T-R" />
+                <field name="SUBDIVISION" alias="Subdivision" />
+                <field name="CITY" alias="City" />
+                <field name="HYPEXT" alias="Link" />
+            </fields>
+      </layer>
+      <layer>
+            <exclude></exclude>
+            <name>Streets</name>
+            <url>http://gis.bentoncountyar.gov/ArcGIS/rest/services/Basemaps/Transportation/MapServer/8</url>
+            <value>ROAD_NAME like REPLACE('%value%', ' ', '%')</value>
+            <title>ROAD_NAME</title>
+            <placeholder>Search by street name...</placeholder>
+            <fields>
+                <field name="ROAD_NAME" alias="Road"></field>
+                <field name="HWY_NUM" alias="Hwy. Number"></field>
+                <field name="OWNERSHIP" alias="Ownership"></field>
+            </fields>
+      </layer>
+      <layer>
+            <name>Subdivisions</name>
+            <url>http://gis.bentoncountyar.gov/ArcGIS/rest/services/Basemaps/Cadastral/MapServer/5</url>
+            <value>NAME like REPLACE('%value%', ' ', '%')</value>
+            <title>NAME</title>
+            <placeholder>Search by subdivision...</placeholder>
+            <fields>
+                <field name="NAME" alias="Name"></field>
+            </fields>
+      </layer>
+      <layer>
+            <name>Rural Scans</name>
+            <url>http://gis.bentoncountyar.gov/ArcGIS/rest/services/Basemaps/Cadastral/MapServer/10</url>
+            <value>S_T_R like '%value%'</value>
+            <title>S_T_R</title>
+            <placeholder>Search by S-T-R</placeholder>
+            <fields>
+                <field name="S_T_R" alias="STR"></field>
+            </fields>
+            <linkTitle>Scan</linkTitle>
+            <link><![CDATA[http://gis.bentoncountyar.gov/PLATS/RURAL/${S_T_R}/]]></link>
+            <dataField>S_T_R</dataField>
+      </layer>
+	</layers>
+</configuration>
